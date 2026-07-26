@@ -6,9 +6,6 @@ import json
 import asyncio
 from typing import Optional
 
-from services.chat import chat_service
-from api.models import ChatRequest, ChatResponse
-
 
 def parse_arguments() -> argparse.Namespace:
     """Parse command line arguments."""
@@ -55,6 +52,10 @@ async def process_chat_message(
         Exit code (0 for success, 1 for error)
     """
     try:
+        # Import after argument parsing to avoid circular imports on help
+        from services.chat import chat_service
+        from api.models import ChatRequest, ChatResponse
+        
         # Create request
         request = ChatRequest(message=message)
         

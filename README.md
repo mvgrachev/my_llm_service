@@ -79,6 +79,14 @@ curl -X POST http://localhost:8000/chat \
 ### С использованием CLI-скрипта
 
 ```bash
+usage: python3 main.py chat [-h] -m MESSAGE [-j]
+
+options:
+  -h, --help            show this help message and exit
+  -m MESSAGE, --message MESSAGE
+                        Message to send to the LLM
+  -j, --json            Output result in JSON format
+
 # Простой вызов с сообщением
 python3 main.py chat -m "Mitsubishi Pajero, 181 лс"
 
