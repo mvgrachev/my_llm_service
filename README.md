@@ -80,19 +80,11 @@ curl -X POST http://localhost:8000/chat \
 
 ```bash
 # Простой вызов с сообщением
-python3 cli.py chat "Mitsubishi Pajero, 181 лс"
+python3 main.py chat "Mitsubishi Pajero, 181 лс"
 
 # Вызов с явным указанием сообщения
-python3 cli.py chat -m "Mitsubishi Pajero, 181 лс"
+python3 main.py chat -m "Mitsubishi Pajero, 181 лс"
 
 # Получить результат в формате JSON
-python3 cli.py chat -m "Mitsubishi Pajero, 181 лс" -j
-```
-
-### Прямой вызов API через curl
-
-```bash
-curl -X POST http://localhost:8000/chat \
-  -H "Content-Type: application/json" \
-  -d '{"message": "Mitsubishi Pajero, 181 лс"}'
+python3 main.py chat -m "Mitsubishi Pajero, 181 лс" -j
 ```
