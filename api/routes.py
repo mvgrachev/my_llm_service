@@ -10,7 +10,7 @@ logger = logging.getLogger('llm_service.routes')
 router = APIRouter(prefix="/chat", tags=["chat"])
 
 
-@router.post("/", response_model=ChatResponse)
+@router.post("", response_model=ChatResponse)
 async def chat_endpoint(request: ChatRequest):
     """
     Process chat message and return response from LLM.
