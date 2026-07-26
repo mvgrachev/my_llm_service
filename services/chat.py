@@ -167,7 +167,7 @@ class ChatService:
         max_retries = 3
         wait_times = [1, 3, 5]  # Wait times between retries
         
-        for attempt in range(max_retries):
+        for attempt in range(max_retries+1):
             try:
                 # Log prompt being sent
                 logger.info(f"[PROMPT] Temperature: {temperature}, Max tokens: {max_output_tokens}")
@@ -217,7 +217,7 @@ class ChatService:
                 # If network error, check connectivity and return fallback
                 if is_network_error and not self._check_network():
                     fallback_response = self._create_fallback_response(f"Network error: {str(e)}")
-                    logger.warning(f"[NETWORK ERROR] Returning fallback response: {fallback_response.model_dump()}")
+                          
                     # Cache the fallback response with shorter TTL
                     self.cache.set(
                         cache_key,
@@ -227,14 +227,15 @@ class ChatService:
                     return fallback_response
                 
                 # If not last attempt, wait before retry
-                if attempt < max_retries - 1:
-                    wait_time = wait_times[attempt] if attempt < len(wait_times) else 5
+                if attempt < max_retries:
+                    wait_time = wait_times[attempt]# if attempt < len(wait_times) else 5
                     logger.warning(f"[RETRY] Waiting {wait_time} seconds before retry...")
                     time.sleep(wait_time)
                 else:
                     # Last attempt failed, raise exception
-                    logger.error(f"[FAILED] LLM processing error after {max_retries} attempts: {str(e)}")
-                    raise Exception(f"LLM processing error after {max_retries} attempts: {str(e)}")
+                    fallback_response = self._create_fallback_response(f"Try out: {str(e)}")
+                    logger.warning(f"[FAILED] LLM processing error after {max_retries} attempts: {str(e)}")
+                    return fallback_response
 
 
 # Default instance for convenience
