@@ -86,9 +86,6 @@ class DeepSeekClient:
             raise ValueError("YANDEX_CLOUD_FOLDER environment variable is required")
         if not self.api_key:
             raise ValueError("YANDEX_CLOUD_API_KEY environment variable is required")
-        
-        openai.api_key = self.api_key
-        openai.api_base = "https://ai.api.cloud.yandex.net/v1"
     
     @with_timeout(timeout=30)
     def generate(
@@ -120,16 +117,22 @@ class DeepSeekClient:
         logger.info(f"[DEEPSEEK] Prompt: {prompt_text[:200]}...")
         
         try:
-            response = openai.ChatCompletion.create(
-                model=f"gpt://{self.folder_id}/{self.model}",
-                temperature=temperature,
-                messages=[
-                    {"role": "system", "content": prompt_text},
-                    {"role": "user", "content": input_text}
-                ],
-                max_tokens=max_output_tokens
+            client = openai.OpenAI(
+	            api_key=self.api_key,
+	            base_url="https://ai.api.cloud.yandex.net/v1",
+	            project=self.folder_id
             )
-            result = response.choices[0].message.content
+
+            response = client.responses.create(
+                model=f"gpt://{self.folder_id}/{self.model}",
+	            temperature=temperature,
+	            instructions=prompt_text,
+	            input=input_text,
+	            max_output_tokens=max_output_tokens
+            )
+
+            result = response.output_text
+
             logger.info(f"[DEEPSEEK] Response received: {result[:200]}...")
             return result
         except Exception as e:
